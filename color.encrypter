@@ -1,1 +1,7 @@
-imprimir
+color $rojo --> #FF00F0;
+número $movimientos --> 2;
+repetir ( $movimientos ) {
+	pintar( $rojo );
+	izquierda();
+	derecha();
+}

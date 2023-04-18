@@ -39,13 +39,8 @@ Numero = 0 | [1-9][0-9]*
 \${Identificador} { /*Ignorar*/ }
 
 /* Tipos de dato */
-numero | 
-cadena |
-color  { return textColor(yychar, yylength(), new Color(148, 58, 173)); }
-
-imprimir  { return textColor(yychar, yylength(), new Color(102, 102, 255)); }
-retornar { return textColor(yychar, yylength(), new Color(102, 102, 255)); }
-
+número |
+color { return textColor(yychar, yylength(), new Color(148, 58, 173)); }
 
 /* Número */
 {Numero} { return textColor(yychar, yylength(), new Color(35, 120, 147)); }
@@ -54,14 +49,14 @@ retornar { return textColor(yychar, yylength(), new Color(102, 102, 255)); }
 #[{Letra}{Digito}]{6} { return textColor(yychar, yylength(), new Color(224, 195, 12)); }
 
 /* Operadores de agrupación */
-"("|")"|"{"|"}" | "[" | "]" { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
+"("|")"|"{"|"}" { return textColor(yychar, yylength(), new Color(169, 155, 179)); }
 
 /* Signos de puntuación */
 ","|
-";" { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
+";" { return textColor(yychar, yylength(), new Color(169, 155, 179)); }
 
 /* Operador de asignación */
---> { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
+--> { return textColor(yychar, yylength(), new Color(169, 155, 179)); }
 
 /* Movimiento */
 adelante |
@@ -120,91 +115,6 @@ sino { return textColor(yychar, yylength(), new Color(48, 63, 159)); }
 
 /* Final */
 final { return textColor(yychar, yylength(), new Color(198, 40, 40)); }
-
-
-/* Comilla simple*/
-( "'") { return textColor(yychar, yylength(), new Color(0, 102, 255)); }
-/* Comillas */
-( "\"") { return textColor(yychar, yylength(), new Color(0, 102, 255)); }
-
-/* Cadena - texto entre comillas*/
-L?\"(\\.|[^\\\"])*\"  { return textColor(yychar, yylength(), new Color(0, 102, 255)); }
-
-
-/* Comparador Mayor igual*/
-">="  { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Comparador Menor igual*/
- "<="  { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Más igual*/
- "+=" { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Menos igual*/
-  "-="   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Multiplica igual*/
-  "*="   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Division igual*/
-  "/="   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Comparador igual*/
-  "=="  { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Diferente */
-  "!="   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Negador*/
-  "!"  { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Incremento */
-  "++"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Decremento*/
-  "--"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Igual */
-  "="   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Modulo igual*/
-  "%="   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Mayor que */
-  ">"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Menor que */
-  "<"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Signo dos puntos*/
-  ":"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* operador y logico*/
-  "&&"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* operador o logico*/
-  "||"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Multiplicación */
-  "*"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Modulo*/
-  "%"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Resta */
-  "-"  { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Operador Resta */
-  "+"   { return textColor(yychar, yylength(), new Color(182, 200, 205)); }
-
-/* Marcador false*/
-  "falso"   { return textColor(yychar, yylength(), new Color(0, 204, 102)); }
-
-/* Marcador true*/
- "verdadero"  { return textColor(yychar, yylength(), new Color(0, 204, 102)); }
-
-
-
 
 /* Errores */
 // Número erróneo
