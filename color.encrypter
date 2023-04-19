@@ -1,4 +1,4 @@
-color $rojo --> #FF00F0;
+color $rojo --> #FF00F0;?===
 número $movimientos --> 2;
 repetir ( $movimientos ) {
 	pintar( $rojo );

@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
@@ -47,6 +48,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 public class Compilador extends JFrame {
 
 	private String title;
+	private String imprimir;
 	private Directory directorio;
     private ArrayList<Token> tokens;
     private ArrayList<ErrorLSSL> errors;
@@ -55,14 +57,13 @@ public class Compilador extends JFrame {
     private ArrayList<Production> identProd;
     private HashMap<String, String> identificadores;
     private boolean codeHasBeenCompiled = false;
-		
+	private ColorearResaltar color;
 	private JPanel contentPane;
 	public  JTextArea jtaOutputConsole;
 	private JButton btnAbrir;
 	private JButton btnNuevo;
 	private JButton btnGuardar;
 	private JButton btnGuardarC;
-	private JButton btnCompilar;
 	private JButton btnEjecutar;
 	private JLabel logo;
 	private Label titulo;
@@ -152,7 +153,6 @@ public class Compilador extends JFrame {
 		btnGuardar = new JButton("Guardar");
 		btnGuardarC = new JButton("Guardar como");
 		btnEjecutar = new JButton("Ejecutar");
-		btnCompilar = new JButton("Compilar");
 		
 		configurar();
 		
@@ -183,11 +183,6 @@ public class Compilador extends JFrame {
 		btnGuardarC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				 btnGuardarCActionPerformed(evt);
-			}
-		});
-		btnCompilar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				btnCompilarActionPerformed(evt);
 			}
 		});
 	    
@@ -238,11 +233,6 @@ public class Compilador extends JFrame {
 		btnGuardarC.setBorder(UIManager.getBorder("Button.border"));
 		btnGuardarC.setBackground(new Color(255, 174, 125));
 		
-		btnCompilar.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnCompilar.setBorderPainted(false);
-		btnCompilar.setBorder(UIManager.getBorder("Button.border"));
-		btnCompilar.setBackground(new Color(255, 145, 77));
-		
 		btnEjecutar.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnEjecutar.setBorderPainted(false);
 		btnEjecutar.setBorder(UIManager.getBorder("Button.border"));
@@ -261,7 +251,9 @@ public class Compilador extends JFrame {
             }
         });
         tblTokens.getTableHeader().setReorderingAllowed(false);
+        tblTokens.setDefaultRenderer(Object.class, new ColorearResaltar());
 		scrollPane_1.setViewportView(tblTokens);
+		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -281,10 +273,8 @@ public class Compilador extends JFrame {
 							.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
 							.addGap(10)
 							.addComponent(btnGuardarC, GroupLayout.PREFERRED_SIZE, 141, GroupLayout.PREFERRED_SIZE)
-							.addGap(92)
-							.addComponent(btnCompilar, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-							.addGap(10)
-							.addComponent(btnEjecutar, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE))
+							.addGap(137)
+							.addComponent(btnEjecutar, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addGap(30)
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -292,7 +282,7 @@ public class Compilador extends JFrame {
 								.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 827, GroupLayout.PREFERRED_SIZE))
 							.addGap(10)
 							.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 337, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(172, Short.MAX_VALUE))
+					.addContainerGap(26, Short.MAX_VALUE))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -309,7 +299,6 @@ public class Compilador extends JFrame {
 						.addComponent(btnAbrir, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnGuardarC, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnCompilar, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnEjecutar, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
 					.addGap(11)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -318,7 +307,7 @@ public class Compilador extends JFrame {
 							.addGap(11)
 							.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE))
 						.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 483, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(236, Short.MAX_VALUE))
+					.addContainerGap(18, Short.MAX_VALUE))
 		);
 		contentPane.setLayout(gl_contentPane);
 	}
@@ -342,35 +331,29 @@ public class Compilador extends JFrame {
         }
 	 }
 	 
-	 private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilarActionPerformed
-        if (getTitle().contains("*") || getTitle().equals(title)) {
-            if (directorio.Save()) {
-                compile();
-            }
-        } else {
-            compile();
-        }
-	}
-	 
 	 private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
 	        directorio.New();
 	        clearFields();
 	 }
 	 
 	 private void btnEjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEjecutarActionPerformed
-		 btnCompilar.doClick();
-	        if (codeHasBeenCompiled) {
-	            if (errors.size() > 0) {
-	                JOptionPane.showMessageDialog(null, "No se puede ejecutar el código ya que se encontró uno o más errores",
-	                        "Error en la compilación", JOptionPane.ERROR_MESSAGE);
-	            } else {
-	                CodeBlock codeBlock = Functions.splitCodeInCodeBlocks(tokens, "{", "}", ";");
-	                System.out.println(codeBlock);
-	                ArrayList<String> blocksOfCode = codeBlock.getBlocksOfCodeInOrderOfExec();
-	                System.out.println(blocksOfCode);
-	                executeCode(blocksOfCode, 1);
-	            }
-	        }
+		imprimir = "";
+		 if (getTitle().contains("*") || getTitle().equals(title)) {
+	           directorio.Save();
+	     }
+ 		compile();
+		if (codeHasBeenCompiled) {
+            if (errors.size() > 0) {
+                JOptionPane.showMessageDialog(null, "No se puede ejecutar el código ya que se encontró " + errors.size() + " errores", "Error en la compilación", JOptionPane.ERROR_MESSAGE);
+            } else {
+                CodeBlock codeBlock = Functions.splitCodeInCodeBlocks(tokens, "{", "}", ";");
+                System.out.println(codeBlock);
+                ArrayList<String> blocksOfCode = codeBlock.getBlocksOfCodeInOrderOfExec();
+                System.out.println(blocksOfCode);
+                executeCode(blocksOfCode, 1);
+            }
+        }
+	    printConsole();
     }
 	 
 	 private void executeCode(ArrayList<String> blocksOfCode, int repeats) {
@@ -395,20 +378,24 @@ public class Compilador extends JFrame {
                         } else {
                             parametro = sentence.substring(9, sentence.length() - 2);
                         }
+                        imprimir = imprimir + "\nPintando de color " + parametro + "...";
                         System.out.println("Pintando de color " + parametro + "...");
                     } else if (sentence.startsWith("izquierda")) {
+                    	imprimir = imprimir + "\nMoviéndose a la izquierda...";
                         System.out.println("Moviéndose a la izquierda...");
                     } else if (sentence.startsWith("derecha")) {
+                    	imprimir = imprimir + "\nMoviéndose a la derecha...";
                         System.out.println("Moviéndose a la derecha...");
                     } else if (sentence.startsWith("adelante")) {
+                    	imprimir = imprimir + "\nMoviéndose a la adelante...";
                         System.out.println("Moviéndose hacia adelante");
                     } else if (sentence.contains("-->")) {
                         String[] identComp = sentence.split(" ");
+                        imprimir = imprimir + "\nDeclarando identificador " + identComp[1] + " igual a " + identComp[3];
                         System.out.println("Declarando identificador " + identComp[1] + " igual a " + identComp[3]);
                     } else if (sentence.startsWith("atrás")) {
+                    	imprimir = imprimir + "\nMoviéndose hacia atrás...";
                         System.out.println("Moviéndose hacia atrás");
-                    } else if (sentence.startsWith("imprimir")) {
-                        System.out.println("imprimir ...");
                     } else if (sentence.startsWith("repetir")) {
                         String parametro;
                         if (sentence.contains("$")) {
@@ -421,7 +408,7 @@ public class Compilador extends JFrame {
                 }
             }
         }
-       }
+       }        
     }
 
 	 private void clearFields() {
@@ -465,7 +452,6 @@ public class Compilador extends JFrame {
 	    fillTableTokens();
 	    syntacticAnalysis();
 	    semanticAnalysis();
-	    printConsole();
 	    codeHasBeenCompiled = true;
     }
 	 
@@ -498,6 +484,7 @@ public class Compilador extends JFrame {
             Functions.addRowDataInTable(tblTokens, data);
         });
     }
+
 	 
 	 private void syntacticAnalysis() {
 	        Grammar gramatica = new Grammar(tokens, errors);
@@ -648,18 +635,18 @@ public class Compilador extends JFrame {
 
 	 
 	 private void semanticAnalysis() {
-		 HashMap<String, String> identDataType = new HashMap<>();
-	        identDataType.put("color", "COLOR");
-	        identDataType.put("número", "NUMERO");
-	        for (Production id : identProd) {
-	            if (!identDataType.get(id.lexemeRank(0)).equals(id.lexicalCompRank(-1))) {
-	                errors.add(new ErrorLSSL(1, " × Error semántico {}: valor no compatible con el tipo de dato [#, %]", id, true));
-	            }
-	            if (id.lexicalCompRank(-1).equals("COLOR") && !id.lexemeRank(-1).matches("#[0-9a-fA-F]+")) {
-	                errors.add(new ErrorLSSL(2, " × Error lógico {}: el color no es un número hexadecimal [#, %]", id, false));
-	            }
-	            identificadores.put(id.lexemeRank(1), id.lexemeRank(-1));
-	        }
+		HashMap<String, String> identDataType = new HashMap<>();
+        identDataType.put("color", "COLOR");
+        identDataType.put("número", "NUMERO");
+        for (Production id : identProd) {
+            if (!identDataType.get(id.lexemeRank(0)).equals(id.lexicalCompRank(-1))) {
+                errors.add(new ErrorLSSL(1, " × Error semántico {}: valor no compatible con el tipo de dato [#, %]", id, true));
+            }
+            if (id.lexicalCompRank(-1).equals("COLOR") && !id.lexemeRank(-1).matches("#[0-9a-fA-F]+")) {
+                errors.add(new ErrorLSSL(2, " × Error lógico {}: el color no es un número hexadecimal [#, %]", id, false));
+            }
+            identificadores.put(id.lexemeRank(1), id.lexemeRank(-1));
+        }
 	 }
 	 
 	 private void printConsole() {
@@ -671,9 +658,9 @@ public class Compilador extends JFrame {
                 String strError = String.valueOf(error);
                 strErrors += strError + "\n";
             }
-            jtaOutputConsole.setText("Compilación terminada...\n" + strErrors + "\nLa compilación terminó con errores...");
+            jtaOutputConsole.setText(strErrors + "\nLa compilación terminó con errores...");
         } else {
-            jtaOutputConsole.setText("Compilación terminada...");
+            jtaOutputConsole.setText(imprimir + "\n\nCompilación terminada...");
         }
         jtaOutputConsole.setCaretPosition(0);
     }
